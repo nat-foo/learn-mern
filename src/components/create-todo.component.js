@@ -1,4 +1,18 @@
 import React, { Component } from 'react';
+/*
+    Axios is a JS library used to make HTTP requests frm Node JS,
+    or XMLHttpRequests from the browser. Where it shines from the 
+    standard way of doing these tasks, is improving '.fetch()'.
+
+    By using axios, we remove the need to pass the results of the
+    HTTP request to the .json() method. Axios simply returns the 
+    data object you expect straight away. Additionally, any kind 
+    of error will successfully execute the catch() block out of 
+    the box.
+
+    https://medium.com/@MinimalGhost/what-is-axios-js-and-why-should-i-care-7eb72b111dc0
+*/
+import axios from 'axios';
 
 export default class CreateTodo extends Component {
 
@@ -6,13 +20,13 @@ export default class CreateTodo extends Component {
         super(props);
 
         this.onChangeTodoDescription = this.onChangeTodoDescription.bind(this);
-        this.onChangeTodoResponsible = this.onChangeTodoResponsible.bind(this);
+        this.onChangeTodoAssignee = this.onChangeTodoAssignee.bind(this);
         this.onChangeTodoPriority = this.onChangeTodoPriority.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
 
         this.state = {
             todo_description: '',
-            todo_responsible: '',
+            todo_assignee: '',
             todo_priority: '',
             todo_completed: false
         }
@@ -24,9 +38,9 @@ export default class CreateTodo extends Component {
         });
     }
 
-    onChangeTodoResponsible(e) {
+    onChangeTodoAssignee(e) {
         this.setState({
-            todo_responsible: e.target.value
+            todo_assignee: e.target.value
         });
     }
 
@@ -41,12 +55,26 @@ export default class CreateTodo extends Component {
         
         console.log(`Form submitted:`);
         console.log(`Todo Description: ${this.state.todo_description}`);
-        console.log(`Todo Responsible: ${this.state.todo_responsible}`);
+        console.log(`Todo Assignee: ${this.state.todo_assignee}`);
         console.log(`Todo Priority: ${this.state.todo_priority}`);
         
+        const newToDo = {
+            todo_description: this.state.todo_description,
+            todo_assignee: this.state.todo_assignee,
+            todo_priority: this.state.todo_priority,
+            todo_completed: this.state.todo_completed
+        };
+
+        /*
+            Use the Axios POST method to send an HTTP POST request
+            to the backend endpoint for adding an item.
+        */
+        axios.post('http://localhost:4000/todos/add', newToDo)
+            .then(res => console.log(res.data));
+
         this.setState({
             todo_description: '',
-            todo_responsible: '',
+            todo_assignee: '',
             todo_priority: '',
             todo_completed: false
         })
@@ -66,12 +94,12 @@ export default class CreateTodo extends Component {
                                 />
                     </div>
                     <div className="form-group">
-                        <label>Responsible: </label>
+                        <label>Assignee: </label>
                         <input 
                                 type="text" 
                                 className="form-control"
-                                value={this.state.todo_responsible}
-                                onChange={this.onChangeTodoResponsible}
+                                value={this.state.todo_assignee}
+                                onChange={this.onChangeTodoAssignee}
                                 />
                     </div>
                     <div className="form-group">
